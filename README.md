@@ -8,11 +8,11 @@ v0.0.1
 
 ### Installation
 ```sh
-pip install requests_logging
+pip install git+ssh://git@github.com/mdmedley/requests_logger.git
 ```
 
 
-### Example
+### Quickstart
 ```python
 import logging
 from requests_logger import LoggingRequests
