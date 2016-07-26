@@ -1,2 +1,1 @@
-from requests_logger import LoggingRequests  #noqa
-
+from requests_logger import LoggingRequests
