@@ -1,3 +1,5 @@
+[![PyPI](https://img.shields.io/pypi/v/requests_logger.svg?style=flat-square)](https://pypi.python.org/pypi/requests_logger) [![Travis](https://img.shields.io/travis/mdmedley/requests_logger.svg?style=flat-square)](https://travis-ci.org/mdmedley/requests_logger)
+
 # Requests Logging
 
 This package is a wrapper around the requests.request object to log http request in a human readable format.
