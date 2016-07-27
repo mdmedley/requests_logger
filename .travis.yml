@@ -4,7 +4,7 @@ python:
     - "3.5"
 
 install:
-    - "pip install . tox nose requests"
+    - "pip install . nose requests"
 
 script:
-    tox
+    nosetests tests/ -v
