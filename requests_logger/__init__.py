@@ -1,1 +1,1 @@
-from requests_logger import LoggingRequests, LoggerError
+from .requests_logger import (LoggingRequests, LoggerError)
