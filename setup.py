@@ -1,9 +1,5 @@
-import os
 from setuptools import setup, find_packages
 
-# Establish a consistent base directory relative to the setup.py file
-os.chdir(os.path.abspath(os.path.dirname(__file__)))
-print 'LOL NOPE '
 
 license = open('LICENSE', 'r').readlines()
 
