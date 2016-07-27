@@ -2,10 +2,10 @@
 
 # Requests Logging
 
-This package is a wrapper around the requests.request object to log http request in a human readable format.
+This package is a wrapper around Requests to log http request in a human readable format.
 
 ### Version
-v0.0.1
+v0.0.2
 
 
 ### Installation
@@ -34,6 +34,6 @@ Want to contribute? Great! Fork and submit a pull request!
 ### Todos
 
     - Format json and xml request/response bodies
-    - Rename package
-    - Rename Class
+    - Rename package (maybe)
+    - Rename Class (maybe)
     - Write more tests
