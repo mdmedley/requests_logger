@@ -1,4 +1,11 @@
+import os
 from setuptools import setup, find_packages
+
+# Establish a consistent base directory relative to the setup.py file
+os.chdir(os.path.abspath(os.path.dirname(__file__)))
+print 'LOL NOPE '
+
+license = open('LICENSE', 'r').readlines()
 
 
 setup(
@@ -7,6 +14,7 @@ setup(
     description='Wrapper around Requests to add logging',
     author='Marcus Medley',
     author_email='mdmeds@gmail.com',
+    license=license,
     packages=find_packages(exclude=('tests*')),
     tests_require=['tox'],
     keywords=['requests', 'logging', 'request'],
