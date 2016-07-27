@@ -10,7 +10,7 @@ v0.0.1
 
 ### Installation
 ```sh
-pip install git+ssh://git@github.com/mdmedley/requests_logger.git
+pip install requests_logger
 ```
 
 
