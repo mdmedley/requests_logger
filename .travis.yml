@@ -1,10 +1,12 @@
 language: python
 python:
-- '2.7'
-- '3.5'
+    - '2.7'
+    - '3.5'
 install:
-- pip install . nose requests coverage
-script: nosetests tests/ -v --with-coverage --cover-package=requests_logger
+    - pip install . nose requests coverage flake8
+script:
+    - flake8
+    - nosetests tests/ -v --with-coverage --cover-package=requests_logger
 deploy:
   provider: pypi
   user: mdmedley
