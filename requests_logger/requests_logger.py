@@ -1,6 +1,6 @@
 import requests
 
-from constants import request_message, response_message
+from .constants import (request_message, response_message)
 
 
 class LoggerError(Exception):
