@@ -1,6 +1,6 @@
 import os
 import logging
-from nose.tools import *
+from nose.tools import raises
 
 from requests_logger import LoggingRequests, LoggerError
 
