@@ -5,7 +5,7 @@
 This package is a wrapper around Requests to log http request in a human readable format.
 
 ### Version
-v0.0.2
+v0.0.3
 
 
 ### Installation

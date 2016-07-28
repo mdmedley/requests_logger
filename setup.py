@@ -6,7 +6,7 @@ license = open('LICENSE', 'r').readlines()
 
 setup(
     name='requests_logger',
-    version='0.0.2',
+    version='0.0.3',
     description='Wrapper around Requests to add logging',
     author='Marcus Medley',
     author_email='mdmeds@gmail.com',
