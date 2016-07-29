@@ -2,10 +2,10 @@
 
 # Requests Logging
 
-This package is a wrapper around Requests to log http request in a human readable format.
+This package is a wrapper around Requests to log http requests in a human readable format.
 
 ### Version
-v0.0.3
+v0.1.0
 
 
 ### Installation
