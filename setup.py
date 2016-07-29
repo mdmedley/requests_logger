@@ -10,7 +10,7 @@ long_description = (
 
 setup(
     name='requests_logger',
-    version='0.1.0',
+    version='0.1.1',
     description='Wrapper around Requests to add logging',
     long_description=long_description,
     author='Marcus Medley',
