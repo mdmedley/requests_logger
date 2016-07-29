@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 
 license = open('LICENSE', 'r').read()
@@ -10,13 +10,13 @@ long_description = (
 
 setup(
     name='requests_logger',
-    version='0.1.1b1',
+    version='0.1.1b2',
     description='Wrapper around Requests to add logging',
     long_description=long_description,
     author='Marcus Medley',
     author_email='mdmeds@gmail.com',
     license=license,
-    packages=find_packages(exclude=('tests*')),
+    packages=['requests_logger'],
     tests_require=['tox'],
     keywords=['requests', 'logging', 'request', 'log', 'logger'],
     url='https://github.com/mdmedley/requests_logger',
