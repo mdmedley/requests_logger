@@ -25,10 +25,20 @@ def mocked_request(*args, **kwargs):
             self.request.url = url
             self.request.body = body
 
-    if args[1] == 'http://website.com':
+    if args[1] == 'http://website.com/params':
         return MockResponse(
             status_code=200, method='GET',
             url='http://website.com/?foo=bar&bar=foo')
+
+    if args[1] == 'http://website.com':
+        return MockResponse(
+            status_code=200, method='GET',
+            url='http://website.com/')
+
+    if args[1] == 'http://website.com/put':
+        return MockResponse(
+            status_code=200, method='GET',
+            url='http://website.com/put/', body={'foo': 'bar'})
 
     if args[1] == 'http://redirect.com':
         redirect = MockResponse(
@@ -42,7 +52,8 @@ class TestLoggingRequests(object):
     @mock.patch('requests.request', side_effect=mocked_request)
     def test_requests_logging(self, mock_request):
         self.req.request(
-            'GET', 'http://website.com', params={'foo': 'bar', 'bar': 'foo'})
+            'GET', 'http://website.com/params',
+            params={'foo': 'bar', 'bar': 'foo'})
         expected = [
             'method  : GET',
             'url     : http://website.com/?foo=bar&bar=foo',
@@ -69,8 +80,60 @@ class TestLoggingRequests(object):
         assert os.path.exists('/tmp/logs.log')
         assert self._file_contains('/tmp/logs.log', expected)[0]
 
+    @mock.patch('requests.request', side_effect=mocked_request)
+    def test_requests_logging_get(self, mock_request):
+        self.req.get('http://website.com')
+        expected = ['http://website.com']
+        self.validate_logs(expected)
+
+    @mock.patch('requests.request', side_effect=mocked_request)
+    def test_requests_logging_put(self, mock_request):
+        self.req.put('http://website.com/put', data={'foo': 'bar'})
+        expected = [
+            'http://website.com',
+            "body    : {'foo': 'bar'}"]
+        self.validate_logs(expected)
+
+    @mock.patch('requests.request', side_effect=mocked_request)
+    def test_requests_logging_post(self, mock_request):
+        self.req.put('http://website.com/put', data={'foo': 'bar'})
+        expected = [
+            'http://website.com',
+            "body    : {'foo': 'bar'}"]
+        self.validate_logs(expected)
+
+    @mock.patch('requests.request', side_effect=mocked_request)
+    def test_requests_logging_options(self, mock_request):
+        self.req.options('http://website.com')
+        expected = ['http://website.com']
+        self.validate_logs(expected)
+
+    @mock.patch('requests.request', side_effect=mocked_request)
+    def test_requests_logging_patch(self, mock_request):
+        self.req.patch('http://website.com')
+        expected = ['http://website.com']
+        self.validate_logs(expected)
+
+    @mock.patch('requests.request', side_effect=mocked_request)
+    def test_requests_logging_copy(self, mock_request):
+        self.req.copy('http://website.com')
+        expected = ['http://website.com']
+        self.validate_logs(expected)
+
+    @mock.patch('requests.request', side_effect=mocked_request)
+    def test_requests_logging_delete(self, mock_request):
+        self.req.delete('http://website.com')
+        expected = ['http://website.com']
+        self.validate_logs(expected)
+
+    @mock.patch('requests.request', side_effect=mocked_request)
+    def test_requests_logging_head(self, mock_request):
+        self.req.head('http://website.com')
+        expected = ['http://website.com']
+        self.validate_logs(expected)
+
     @classmethod
-    def setUpClass(cls):
+    def setUp(cls):
         logger = logging.getLogger('requests_logger')
         handler = logging.FileHandler('/tmp/logs.log', mode='w')
         formater = logging.Formatter(
@@ -81,8 +144,12 @@ class TestLoggingRequests(object):
         cls.req = LoggingRequests
 
     @classmethod
-    def tearDownClass(cls):
+    def tearDown(cls):
         os.remove('/tmp/logs.log')
+
+    def validate_logs(self, expected):
+        assert os.path.exists('/tmp/logs.log')
+        assert self._file_contains('/tmp/logs.log', expected)[0]
 
     def _file_contains(self, file_path, target_strings):
         """

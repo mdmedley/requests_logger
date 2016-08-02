@@ -24,6 +24,38 @@ class LoggingRequests(object):
             return cls.log_request(response)
 
     @classmethod
+    def get(cls, url, **kwargs):
+        return cls.request(method='GET', url=url, **kwargs)
+
+    @classmethod
+    def put(cls, url, **kwargs):
+        return cls.request(method='PUT', url=url, **kwargs)
+
+    @classmethod
+    def post(cls, url, data=None, **kwargs):
+        return cls.request(method='POST', url=url, data=data, **kwargs)
+
+    @classmethod
+    def delete(cls, url, **kwargs):
+        return cls.request(method='DELETE', url=url, **kwargs)
+
+    @classmethod
+    def copy(cls, url, **kwargs):
+        return cls.request(method='COPY', url=url, **kwargs)
+
+    @classmethod
+    def head(cls, url, **kwargs):
+        return cls.request(method='HEAD', url=url, **kwargs)
+
+    @classmethod
+    def options(cls, url, **kwargs):
+        return cls.request(method='OPTIONS', url=url, **kwargs)
+
+    @classmethod
+    def patch(cls, url, **kwargs):
+        return cls.request(method='PATCH', url=url, **kwargs)
+
+    @classmethod
     def log_request(cls, response):
 
         # Get params. Defaults to None
