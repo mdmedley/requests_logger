@@ -5,7 +5,7 @@
 This package is a wrapper around Requests to log http requests in a human readable format.
 
 ### Version
-v0.1.2
+v0.2.0
 
 
 ### Installation
@@ -19,11 +19,15 @@ pip install requests_logger
 import logging
 from requests_logger import LoggingRequests
 
-logger = logging.getLogger('my_logger')
-# Setup logger how you see fit
+# Setup logger
+logger = logging.getLogger('requests_logger') #  Gets base logger for LoggingRequests
+handler = logging.FileHandler('logs.log', mode='w')
+formater = logging.Formatter('%(asctime)s: %(levelname)s: %(name)s: %(message)s')
+handler.setFormatter(formater)
+logger.addHandler(handler)
+logger.setLevel(logging.DEBUG)
 
-req = LoggingRequests(logger)
-req.request('GET', 'http://google.com')
+response = LoggingRequests.request('GET', 'http://google.com')
 ```
 
 

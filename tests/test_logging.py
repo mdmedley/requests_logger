@@ -1,42 +1,44 @@
 import os
 import mock
 import logging
-from nose.tools import raises
 
-from requests_logger import (LoggingRequests, LoggerError)
+from requests_logger import LoggingRequests
+
+
+class Request(object):
+    pass
 
 
 def mocked_request(*args, **kwargs):
     class MockResponse(object):
-        class request(object):
-            pass
-
         def __init__(
                 self, status_code, method, url, params=None, content=None,
-                headers=None, body=None):
+                headers=None, body=None, history=[]):
             self.params = params
             self.status_code = status_code
             self.content = content
             self.headers = headers
+            self.history = history
+            self.request = Request()
             self.request.headers = headers
             self.request.method = method
             self.request.url = url
             self.request.body = body
 
-        def json(self):
-            return self.json_data
+    if args[1] == 'http://website.com':
+        return MockResponse(
+            status_code=200, method='GET',
+            url='http://website.com/?foo=bar&bar=foo')
 
-    return MockResponse(
-        status_code=200, method='GET',
-        url='http://website.com/?foo=bar&bar=foo')
+    if args[1] == 'http://redirect.com':
+        redirect = MockResponse(
+            status_code=301, method='GET', url='http://redirect.com/')
+        return MockResponse(
+            status_code=200, method='GET',
+            url='https://redirect.com/', history=[redirect])
 
 
-class TestLoggingRequests():
-
-    @raises(LoggerError)
-    def test_no_logger_exception(self):
-        LoggingRequests()
-
+class TestLoggingRequests(object):
     @mock.patch('requests.request', side_effect=mocked_request)
     def test_requests_logging(self, mock_request):
         self.req.request(
@@ -44,8 +46,24 @@ class TestLoggingRequests():
         expected = [
             'method  : GET',
             'url     : http://website.com/?foo=bar&bar=foo',
-            "params  : {'foo': 'bar', 'bar': 'foo'}",
+            "'foo': 'bar'",
+            "'bar': 'foo'",
             'body    : None'
+        ]
+
+        assert os.path.exists('/tmp/logs.log')
+        assert self._file_contains('/tmp/logs.log', expected)[0]
+
+    @mock.patch('requests.request', side_effect=mocked_request)
+    def test_requests_logging_redirect(self, mock_request):
+        self.req.request(
+            'GET', 'http://redirect.com')
+        expected = [
+            'method  : GET',
+            'url     : http://redirect.com/',
+            'params  : None',
+            'body    : None',
+            'url     : https://redirect.com/'
         ]
 
         assert os.path.exists('/tmp/logs.log')
@@ -53,14 +71,14 @@ class TestLoggingRequests():
 
     @classmethod
     def setUpClass(cls):
-        logger = logging.getLogger(__name__)
+        logger = logging.getLogger('requests_logger')
         handler = logging.FileHandler('/tmp/logs.log', mode='w')
         formater = logging.Formatter(
             '%(asctime)s: %(levelname)s: %(name)s: %(message)s')
         handler.setFormatter(formater)
         logger.addHandler(handler)
 
-        cls.req = LoggingRequests(logger=logger)
+        cls.req = LoggingRequests
 
     @classmethod
     def tearDownClass(cls):
