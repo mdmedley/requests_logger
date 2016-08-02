@@ -1,8 +1,32 @@
 import os
+import mock
 import logging
 from nose.tools import raises
 
-from requests_logger import LoggingRequests, LoggerError
+from requests_logger import (LoggingRequests, LoggerError)
+
+
+def mocked_request(*args, **kwargs):
+    class MockResponse(object):
+        class request(object):
+            pass
+
+        def __init__(
+                self, status_code, method, url, params=None, content=None,
+                headers=None):
+            self.params = params
+            self.status_code = status_code
+            self.content = content
+            self.headers = headers
+            self.request.headers = headers
+            self.request.method = method
+            self.request.url = url
+
+        def json(self):
+            return self.json_data
+
+    return MockResponse(
+        status_code=200, method='GET', url='http://website.com/')
 
 
 class TestLoggingRequests():
@@ -11,11 +35,12 @@ class TestLoggingRequests():
     def test_no_logger_exception(self):
         LoggingRequests()
 
-    def test_requests_logging(self):
-        self.req.request('GET', 'http://www.google.com')
+    @mock.patch('requests.request', side_effect=mocked_request)
+    def test_requests_logging(self, mock_request):
+        self.req.request('GET', 'http://website.com')
         expected = [
             'method  : GET',
-            'url     : http://www.google.com/',
+            'url     : http://website.com/',
             'params  : None',
             'body    : None'
         ]
@@ -39,8 +64,9 @@ class TestLoggingRequests():
         os.remove('/tmp/logs.log')
 
     def _file_contains(self, file_path, target_strings):
-        """ Checks that the specified file contains all strings in the
-        target_strings list.
+        """
+            Checks that the specified file contains all strings in the
+            target_strings list.
         """
         not_found = []
         with open(file_path) as in_file:
