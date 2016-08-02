@@ -28,9 +28,20 @@ class LoggingRequests(object):
     def request(self, method, url, **kwargs):
         # Make the actual request
         response = requests.request(method, url, **kwargs)
+        return self.log_request(response)
 
-        # Get params dictionary. Defaults to None
-        params = kwargs.get('params')
+    def log_request(self, response):
+
+        # Get params. Defaults to empty string
+        if '?' in response.request.url:
+            url, params_str = response.request.url.split('?', 1)
+
+            params = {
+                param.split('=')[0]: param.split('=')[1] for param in
+                params_str.split('&')
+            }
+        else:
+            params = None
 
         # Log request
         self.logger.debug(
@@ -39,7 +50,7 @@ class LoggingRequests(object):
                 url=response.request.url,
                 params=params,
                 headers=response.request.headers,
-                body=kwargs.get('data')))
+                body=response.request.body))
 
         # Log response
         self.logger.debug(

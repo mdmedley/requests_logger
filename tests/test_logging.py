@@ -13,7 +13,7 @@ def mocked_request(*args, **kwargs):
 
         def __init__(
                 self, status_code, method, url, params=None, content=None,
-                headers=None):
+                headers=None, body=None):
             self.params = params
             self.status_code = status_code
             self.content = content
@@ -21,12 +21,14 @@ def mocked_request(*args, **kwargs):
             self.request.headers = headers
             self.request.method = method
             self.request.url = url
+            self.request.body = body
 
         def json(self):
             return self.json_data
 
     return MockResponse(
-        status_code=200, method='GET', url='http://website.com/')
+        status_code=200, method='GET',
+        url='http://website.com/?foo=bar&bar=foo')
 
 
 class TestLoggingRequests():
@@ -37,11 +39,12 @@ class TestLoggingRequests():
 
     @mock.patch('requests.request', side_effect=mocked_request)
     def test_requests_logging(self, mock_request):
-        self.req.request('GET', 'http://website.com')
+        self.req.request(
+            'GET', 'http://website.com', params={'foo': 'bar', 'bar': 'foo'})
         expected = [
             'method  : GET',
-            'url     : http://website.com/',
-            'params  : None',
+            'url     : http://website.com/?foo=bar&bar=foo',
+            "params  : {'foo': 'bar', 'bar': 'foo'}",
             'body    : None'
         ]
 
