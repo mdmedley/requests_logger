@@ -3,7 +3,7 @@ python:
     - '2.7'
     - '3.5'
 install:
-    - pip install . nose requests coverage flake8
+    - pip install . nose requests coverage flake8 mock
 script:
     - flake8
     - nosetests tests/ -v --with-coverage --cover-package=requests_logger
